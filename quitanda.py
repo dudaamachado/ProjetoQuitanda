@@ -1,44 +1,45 @@
 from flask import Flask, render_template, request, redirect, session
-import sqlite3 as sql 
-import uuid
+import sqlite3 as sql
+import uuid     # biblioteca gera números aleatórios
 
 app = Flask(__name__)
 app.secret_key = "quitandazezinho"
 
-usuario = "zezaofruit"
-senha = "dudagata"
+usario = "fruitzezao"
+senha = "zefairplay"
 login = False
 
-#FUNÇÃO PARA VERIFICAR SESSÃO 
+#Função para verifcar sessão
+
 def verifica_sessao():
     if "login" in session and session["login"]:
         return True
     else:
         return False
-    
-#CONEXÃO COM O BANCO DE DADOS 
-def conecta_detabase():
-    conexao = sql.connect("db_quitanda.db")
-    conexao.row_factory = sql.Row
-    return conexao
 
-#INICIAR O BANCO DE DADOS 
+#Conexão com banco de dados
+def conecta_database():
+        conexao = sql.connect("db_quitanda.db")
+        conexao.row_factory = sql.Row
+        return conexao 
+
+#Iniciar banco de dados
 def iniciar_db():
-    conexao = conecta_detabase()
-    with app.open_resource('esquema.sql', mode='r') as comandos:
-        conexao.cursor().executescript(comandos.read())
-    conexao.commit()
-    conexao.close()
+     conexao = conecta_database()
+     with app.open_resource('esquema.sql', mode='r') as comandos:
+          conexao.cursor().executescript(comandos.read())
+          conexao.commit()
+          conexao.close()
 
-#ROTA DA PÁGINA INICIAL 
+#Rota da página inicial
 @app.route("/")
 def index():
-    iniciar_db()
-    conexao = conecta_detabase()
-    produtos = conexao.execute('SELECT * FROM produtos ORDER BY id_prod DESC').fetchall()
-    conexao.close()
-    title = "Home"
-    return render_template("home.html", produtos=produtos, title=title)
+     iniciar_db()
+     conexao = conecta_database()
+     produtos = conexao.execute('SELECT * FROM produtos ORDER BY id_prod DESC').fetchall()
+     conexao.close()
+     title = "Home"
+     return render_template("home.html", produtos=produtos, title=title)
 
-#FINAL DO CÓDIGO - EXECUTANDO O SERVIDOR 
+#Final do código - Executando o servidor
 app.run(debug=True)
