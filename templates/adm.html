@@ -1,4 +1,4 @@
-{% extends 'modelo.html' } <!-- herda o conteúdo da página modelo.html-->
+{% extends 'modelo.html' %} <!-- herda o conteúdo da página modelo.html-->
 {% block conteudo %}
 {% if not produtos %} <!-- rodado apenas quando não houver produtos cadastrados -->
     <h1 class="text-center text-danger my-5">Não há produtos cadastrados!</h1>
@@ -31,7 +31,7 @@
         </div>
         <!-- botões com direcionamento para a página de cadastro de produtos e de logout-->
         <div class="container text-center">
-            <button type="button" onclick="window.location.href='/cadprodutos'" class="btn btn-lg btn-sucess mx-5">Cadastras</button>
+            <button type="button" onclick="window.location.href='/cadprodutos'" class="btn btn-lg btn-success mx-5">Cadastrar</button>
             <button type="button" onclick="window.location.href='logout'" class="btn btn-lg btn-danger mx-5">Sair</button>
         </div>
     {% endblock %}
