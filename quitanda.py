@@ -120,7 +120,7 @@ def excluir(id):
     else:
         return redirect("/login")
     
-#CRIAR A ROTA DO EDITAR PRODUTOS
+#CRIAR A ROTA DO EDITAR PRODUTOS rota anterio da edição serve para abrir o produto a ser editado
 @app.route("/editprodutos/<id_prod>")
 def editar(id_prod):
     if verifica_sessao():
@@ -133,22 +133,28 @@ def editar(id_prod):
     else:
         return redirect("/login")
     
-# CRIAR A ROTA PARA TRATAR A EDIÇÃO
+# CRIAR A ROTA PARA TRATAR A EDIÇÃO rpta para salvar aquilo que foi alterado
 @app.route("/editarprodutos", methods=['POST'])
 def editprod():
+    conexao = conecta_database()
     id_prod = request.form['id_prod']
     nome_prod = request.form['nome_prod']
     desc_prod = request.form['desc_prod']
     preco_prod = request.form['preco_prod']
-    img_prod = request.files['img_prod']
-    id_foto = str(uuid.uuid4().hex)
-    filename = id_foto + nome_prod + '.png'
-    img_prod.save("static/img/produtos/" + filename)
-    conexao = conecta_database()
-    conexao.execute('UPDATE produtos SET nome_prod=?, desc_prod=?, preco_prod=?, img_prod=? WHERE id_prod=?',
-                    (nome_prod, desc_prod, preco_prod, filename, id_prod))
+    
+    if request.files['img_prod']:
+        img_prod = request.files['img_prod']
+        id_foto = str(uuid.uuid4().hex)
+        filename = id_foto + nome_prod + '.png'
+        img_prod.save("static/img/produtos/" + filename)
+        conexao.execute('UPDATE produtos SET nome_prod=?, desc_prod=?, preco_prod=?, img_prod=? WHERE id_prod=?',
+                        (nome_prod, desc_prod, preco_prod, filename, id_prod))
+    else:
+        conexao.execute('UPDATE produtos SET nome_prod=?, desc_prod=?, preco_prod=? WHERE id_prod=?',
+                        (nome_prod, desc_prod, preco_prod, id_prod))
     conexao.commit()
     conexao.close()
+    return redirect('/adm')
 
 #ROTA DA PÁGINA DE BUSCA 
 @app.route("/busca",methods=["post"])
